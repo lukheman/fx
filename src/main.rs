@@ -4,26 +4,23 @@ use std::fs::{self, DirEntry};
 use std::path::{Path, PathBuf};
 
 use ratatui::{
-    layout::Alignment, layout::Rect, prelude::Stylize, style::Style, symbols::border, text::Text,
-    widgets::Widget, widgets::*, Frame,
+    layout::Rect, prelude::Stylize, style::Style, symbols::border, text::Text, widgets::Widget,
+    widgets::*,
 };
 
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 mod tui;
 
-
 #[derive(Default)]
 struct App {
     entries: Vec<DirEntry>,
     exit: bool,
-    area: Rect,
     path: PathBuf,
-    state: ListState
+    state: ListState,
 }
 
 impl Widget for &mut App {
-
     fn render(self, area: Rect, buf: &mut ratatui::prelude::Buffer) {
         let mut styled_items = vec![];
         for item in &self.entries {
@@ -49,12 +46,10 @@ impl Widget for &mut App {
             .highlight_style(Style::new().black().on_blue());
 
         StatefulWidget::render(items, area, buf, &mut self.state);
-
     }
 }
 
 impl App {
-     
     fn set_entries(&mut self) {
         self.entries.clear();
 
@@ -73,7 +68,7 @@ impl App {
     }
 
     fn run(&mut self, terminal: &mut tui::Tui) -> io::Result<()> {
-        self.path = PathBuf::from("./");
+        self.path = PathBuf::from(".");
 
         self.set_entries();
 
