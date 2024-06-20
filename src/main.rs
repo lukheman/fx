@@ -4,6 +4,7 @@ use std::io;
 
 mod tui;
 mod app;
+mod ui;
 
 use ratatui::terminal::Terminal;
 use ratatui::backend::CrosstermBackend;
@@ -20,7 +21,8 @@ fn main() -> io::Result<()> {
     let mut app = App::new();
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
 
-    run_app(&mut app, &mut terminal);
+    app.read_path();
+    run_app(&mut app, &mut terminal)?;
 
     tui::restore()?;
     Ok(())
@@ -30,11 +32,21 @@ fn main() -> io::Result<()> {
 
 fn run_app<B: Backend>(app: &mut App, terminal: &mut Terminal<B>) -> io::Result<()> {
     loop {
+        terminal.draw(|f| ui::ui(f, app))?;
 
         if let Event::Key(key) = event::read()? {
 
-            match key.code {
-                KeyCode::Char(0)
+            if key.kind == KeyEventKind::Press {
+
+                match key.code {
+                    KeyCode::Char('j') => app.next_item(),
+                    KeyCode::Char('k') => app.prev_item(),
+                    KeyCode::Char('l') => app.next_path(),
+                    KeyCode::Char('h') => app.parent_path(),
+                    KeyCode::Char('q') => break,
+                    _ => {}
+                }
+
             }
         }
 

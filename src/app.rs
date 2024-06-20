@@ -8,7 +8,7 @@ pub struct App {
     pub path: PathBuf,
     pub items: Vec<DirEntry>,
     pub current_item: PathBuf,
-    state: ListState
+    pub state: ListState
 }
 
 impl App {
@@ -23,15 +23,16 @@ impl App {
         }
     }
 
-    fn read_path(&mut self) {
+    pub fn read_path(&mut self) {
         let entriens = fs::read_dir(&self.path);
 
+        self.items.clear();
         for entry in entriens.unwrap() {
             self.items.push(entry.unwrap())
         }
     }
 
-    fn replace_path(&mut self) {
+    pub fn next_path(&mut self) {
 
         if self.current_item.is_dir() {
             self.path = self.current_item.clone();
@@ -40,7 +41,15 @@ impl App {
 
     }
 
-    fn next_item(&mut self) {
+    pub fn parent_path(&mut self) {
+        match self.path.parent() {
+            Some(value) if value 
+        }
+        self.path = self.path.parent().unwrap().to_path_buf();
+        self.read_path();
+    }
+
+    pub fn next_item(&mut self) {
         let i = match self.state.selected() {
             Some(value) => {
                 if value >= self.items.len() - 1 {
@@ -51,10 +60,12 @@ impl App {
             }
             None => 0
         };
+
+        self.current_item = self.items[i].path();
         self.state.select(Some(i));
     }
 
-    fn prev_item(&mut self) {
+    pub fn prev_item(&mut self) {
         let i = match self.state.selected() {
             Some(value) => {
                 if value == 0 {
