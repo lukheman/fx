@@ -33,6 +33,14 @@ impl App {
         }
     }
 
+    pub fn read_file(&self) -> String {
+        if self.current_item.is_file() {
+            fs::read_to_string(self.current_item.as_path()).expect("this is a expect of a file")
+        } else {
+            String::new()
+        }
+    }
+
     pub fn next_path(&mut self) {
 
         if self.current_item.is_dir() {
