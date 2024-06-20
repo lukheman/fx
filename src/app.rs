@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use std::fs::DirEntry;
 use ratatui::widgets::ListState;
 use std::fs;
+use std::path::Path;
 
 pub struct App {
     pub path: PathBuf,
@@ -41,12 +42,15 @@ impl App {
 
     }
 
-    pub fn parent_path(&mut self) {
+    pub fn prev_path(&mut self) {
         match self.path.parent() {
-            Some(value) if value 
+            Some(value) if value != Path::new("") => {
+                self.path = value.to_path_buf();
+                self.read_path();
+            },
+            _ => {}
+            None => {}
         }
-        self.path = self.path.parent().unwrap().to_path_buf();
-        self.read_path();
     }
 
     pub fn next_item(&mut self) {

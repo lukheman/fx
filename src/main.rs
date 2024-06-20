@@ -42,7 +42,7 @@ fn run_app<B: Backend>(app: &mut App, terminal: &mut Terminal<B>) -> io::Result<
                     KeyCode::Char('j') => app.next_item(),
                     KeyCode::Char('k') => app.prev_item(),
                     KeyCode::Char('l') => app.next_path(),
-                    KeyCode::Char('h') => app.parent_path(),
+                    KeyCode::Char('h') => app.prev_path(),
                     KeyCode::Char('q') => break,
                     _ => {}
                 }
