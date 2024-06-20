@@ -1,8 +1,8 @@
 
 use ratatui::Frame;
 use ratatui::layout::{Layout, Direction, Constraint};
-use ratatui::widgets::{Block, List, Borders};
-use ratatui::style::Style;
+use ratatui::widgets::{Block, List, ListItem, Borders};
+use ratatui::style::{Stylize, Style};
 use crate::App;
 
 pub fn ui(f: &mut Frame, app: &mut App) {
@@ -26,14 +26,22 @@ pub fn ui(f: &mut Frame, app: &mut App) {
         let file_name = entry.file_name();
 
         if let Some(item) = file_name.to_str() {
-            items.push(item.to_string());
+            let i: ListItem;
+            if entry.path().is_dir() {
+                i = ListItem::new(item.to_string()).blue();
+            } else {
+                i = ListItem::new(item.to_string()).white();
+            }
+
+            items.push(i);
         }
 
     }
 
     let list = List::new(items) 
         .block(list_block)
-        .highlight_symbol(">> ");
+        .highlight_symbol("")
+        .highlight_style(Style::default().black().on_blue());
 
     f.render_stateful_widget(list, chunks[0], &mut app.state);
 

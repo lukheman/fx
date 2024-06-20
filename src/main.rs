@@ -1,7 +1,3 @@
-
-
-use std::io;
-
 mod tui;
 mod app;
 mod ui;
@@ -10,7 +6,7 @@ use ratatui::terminal::Terminal;
 use ratatui::backend::CrosstermBackend;
 use ratatui::prelude::Backend;
 use crossterm::event::{self, Event, KeyCode, KeyEventKind};
-use std::io::stdout;
+use std::io::{self, stdout};
 
 use app::App;
 

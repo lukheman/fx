@@ -20,7 +20,7 @@ impl App {
             path: PathBuf::from("."),
             items: Vec::<DirEntry>::new(),
             current_item: PathBuf::default(),
-            state: ListState::default(),
+            state: ListState::default().with_selected(Some(0)),
         }
     }
 
@@ -38,6 +38,7 @@ impl App {
         if self.current_item.is_dir() {
             self.path = self.current_item.clone();
             self.read_path();
+            self.state.select(Some(0));
         }
 
     }
@@ -47,9 +48,9 @@ impl App {
             Some(value) if value != Path::new("") => {
                 self.path = value.to_path_buf();
                 self.read_path();
+                self.state.select(Some(0));
             },
             _ => {}
-            None => {}
         }
     }
 
@@ -81,6 +82,7 @@ impl App {
             None => 0
         };
 
+        self.current_item = self.items[i].path();
         self.state.select(Some(i));
     }
 
