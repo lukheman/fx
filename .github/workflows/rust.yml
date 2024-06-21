@@ -12,7 +12,7 @@ env:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: Arch-linux
 
     steps:
     - uses: actions/checkout@v4
