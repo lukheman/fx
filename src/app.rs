@@ -1,21 +1,18 @@
-
-use std::path::PathBuf;
-use std::fs::DirEntry;
 use ratatui::widgets::ListState;
 use std::fs;
+use std::fs::DirEntry;
 use std::path::Path;
+use std::path::PathBuf;
 
 pub struct App {
     pub path: PathBuf,
     pub items: Vec<DirEntry>,
     pub current_item: PathBuf,
-    pub state: ListState
+    pub state: ListState,
 }
 
 impl App {
-
     pub fn new() -> Self {
-
         Self {
             path: PathBuf::from("."),
             items: Vec::<DirEntry>::new(),
@@ -35,20 +32,26 @@ impl App {
 
     pub fn read_file(&self) -> String {
         if self.current_item.is_file() {
-            fs::read_to_string(self.current_item.as_path()).expect("this is a expect of a file")
+            // TODO: jika yang dibuka adalah binary file maka akan error
+
+            if fs::read_to_string(self.current_item.as_path()).is_err() {
+                String::from("binary")
+            } else {
+                fs::read_to_string(self.current_item.as_path()).expect("this is a expect of a file")
+            }
+
+            // match fs::read_to_string(self.current_item.as_path()) 
         } else {
             String::new()
         }
     }
 
     pub fn next_path(&mut self) {
-
         if self.current_item.is_dir() {
             self.path = self.current_item.clone();
             self.read_path();
             self.state.select(Some(0));
         }
-
     }
 
     pub fn prev_path(&mut self) {
@@ -57,7 +60,7 @@ impl App {
                 self.path = value.to_path_buf();
                 self.read_path();
                 self.state.select(Some(0));
-            },
+            }
             _ => {}
         }
     }
@@ -71,7 +74,7 @@ impl App {
                     value + 1
                 }
             }
-            None => 0
+            None => 0,
         };
 
         self.current_item = self.items[i].path();
@@ -87,11 +90,10 @@ impl App {
                     value - 1
                 }
             }
-            None => 0
+            None => 0,
         };
 
         self.current_item = self.items[i].path();
         self.state.select(Some(i));
     }
-
 }
